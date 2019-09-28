@@ -1,0 +1,467 @@
+Trivial sequence found for period: 11
+Trivial sequence found for period: 6
+Trivial sequence found for period: 5
+Trivial sequence found for period: 8
+Trivial sequence found for period: 9
+Trivial sequence found for period: 7
+Trivial sequence found for period: 10
+Trivial sequence found for period: 12
+Completed period: 11, least uncompleted period: 5
+Close: [3, 3, 1, 3, 2, 999], period: 6, i: 5
+Close: [5, 1, 5, 2, 999], period: 5, i: 4
+Close: [7, 5, 5, 1, 4, 7, 5, 4, 3, 999], period: 10, i: 9
+Trivial sequence found for period: 13
+Completed period: 8, least uncompleted period: 5
+Close: [6, 1, 6, 2, 6, 999], period: 6, i: 5
+Testing sequence: [5, 1, 5, 2, 5], period: 5
+Trivial sequence found for period: 14
+Completed period: 9, least uncompleted period: 5
+Close: [6, 3, 2, 6, 3, 999], period: 6, i: 5
+Close: [5, 3, 5, 2, 999], period: 5, i: 4
+Completed period: 7, least uncompleted period: 5
+Trivial sequence found for period: 15
+Testing sequence: [6, 3, 2, 6, 3, 3], period: 6
+Completed period: 12, least uncompleted period: 5
+Trivial sequence found for period: 16
+Trivial sequence found for period: 17
+Completed period: 10, least uncompleted period: 5
+Completed period: 13, least uncompleted period: 5
+Trivial sequence found for period: 18
+Trivial sequence found for period: 19
+Completed period: 14, least uncompleted period: 5
+Trivial sequence found for period: 20
+Completed period: 5, least uncompleted period: 6
+Completed period: 6, least uncompleted period: 15
+Trivial sequence found for period: 21
+Completed period: 15, least uncompleted period: 16
+Trivial sequence found for period: 22
+Trivial sequence found for period: 23
+Completed period: 16, least uncompleted period: 17
+Completed period: 17, least uncompleted period: 18
+Trivial sequence found for period: 24
+Trivial sequence found for period: 25
+Completed period: 18, least uncompleted period: 19
+Trivial sequence found for period: 26
+Completed period: 19, least uncompleted period: 20
+Trivial sequence found for period: 27
+Completed period: 20, least uncompleted period: 21
+Trivial sequence found for period: 28
+Close: [17, 4, 12, 14, 12, 2, 12, 2, 2, 1, 12, 4, 10, 14, 10, 2, 7, 17, 17, 1, 10, 999], period: 22, i: 21
+Completed period: 21, least uncompleted period: 22
+Trivial sequence found for period: 29
+Completed period: 22, least uncompleted period: 23
+Trivial sequence found for period: 30
+Completed period: 23, least uncompleted period: 24
+Trivial sequence found for period: 31
+Completed period: 24, least uncompleted period: 25
+Trivial sequence found for period: 32
+Completed period: 25, least uncompleted period: 26
+Trivial sequence found for period: 33
+Completed period: 26, least uncompleted period: 27
+Trivial sequence found for period: 34
+Completed period: 27, least uncompleted period: 28
+Trivial sequence found for period: 35
+Trivial sequence found for period: 5
+Trivial sequence found for period: 6
+Trivial sequence found for period: 7
+Trivial sequence found for period: 8
+Trivial sequence found for period: 9
+Trivial sequence found for period: 10
+Trivial sequence found for period: 11
+Trivial sequence found for period: 12
+Close: [5, 1, 5, 2, 999], period: 5, i: 4
+Close: [6, 1, 6, 2, 6, 999], period: 6, i: 5
+Completed period: 7, least uncompleted period: 5
+Close: [8, 2, 2, 1, 8, 4, 8, 999], period: 8, i: 7
+Testing sequence: [5, 1, 5, 2, 5], period: 5
+Close: [6, 3, 2, 6, 3, 999], period: 6, i: 5
+Completed period: 9, least uncompleted period: 5
+Trivial sequence found for period: 13
+Testing sequence: [8, 2, 2, 1, 8, 4, 8, 2], period: 8
+Close: [5, 3, 5, 2, 999], period: 5, i: 4
+Testing sequence: [6, 3, 2, 6, 3, 3], period: 6
+Completed period: 10, least uncompleted period: 5
+Trivial sequence found for period: 14
+Close: [8, 4, 4, 1, 8, 4, 3, 999], period: 8, i: 7
+Completed period: 11, least uncompleted period: 5
+Trivial sequence found for period: 15
+Completed period: 12, least uncompleted period: 5
+Trivial sequence found for period: 16
+Completed period: 13, least uncompleted period: 5
+Trivial sequence found for period: 17
+Completed period: 5, least uncompleted period: 6
+Trivial sequence found for period: 18
+Trivial sequence found for period: 19
+Completed period: 6, least uncompleted period: 8
+Trivial sequence found for period: 20
+Completed period: 8, least uncompleted period: 14
+Trivial sequence found for period: 21
+Completed period: 14, least uncompleted period: 15
+Completed period: 15, least uncompleted period: 16
+Trivial sequence found for period: 22
+Completed period: 16, least uncompleted period: 17
+Trivial sequence found for period: 23
+Completed period: 17, least uncompleted period: 18
+Trivial sequence found for period: 24
+Trivial sequence found for period: 25
+Completed period: 18, least uncompleted period: 19
+Completed period: 19, least uncompleted period: 20
+Trivial sequence found for period: 26
+Trivial sequence found for period: 27
+Completed period: 20, least uncompleted period: 21
+Trivial sequence found for period: 28
+Completed period: 21, least uncompleted period: 22
+Trivial sequence found for period: 29
+Completed period: 22, least uncompleted period: 23
+Trivial sequence found for period: 30
+Completed period: 23, least uncompleted period: 24
+Trivial sequence found for period: 31
+Completed period: 24, least uncompleted period: 25
+Trivial sequence found for period: 32
+Trivial sequence found for period: 33
+Completed period: 27, least uncompleted period: 25
+Trivial sequence found for period: 34
+Trivial sequence found for period: 5
+Trivial sequence found for period: 6
+Trivial sequence found for period: 7
+Trivial sequence found for period: 9
+Trivial sequence found for period: 10
+Trivial sequence found for period: 8
+Trivial sequence found for period: 11
+Trivial sequence found for period: 12
+Close: [5, 1, 5, 2, 999], period: 5, i: 4
+Close: [6, 1, 6, 2, 6, 999], period: 6, i: 5
+Completed period: 7, least uncompleted period: 5
+Close: [8, 2, 2, 1, 8, 4, 8, 999], period: 8, i: 7
+Testing sequence: [5, 1, 5, 2, 5], period: 5
+Close: [6, 3, 2, 6, 3, 999], period: 6, i: 5
+Completed period: 9, least uncompleted period: 5
+Trivial sequence found for period: 13
+Testing sequence: [8, 2, 2, 1, 8, 4, 8, 2], period: 8
+Close: [5, 3, 5, 2, 999], period: 5, i: 4
+Testing sequence: [6, 3, 2, 6, 3, 3], period: 6
+Completed period: 10, least uncompleted period: 5
+Trivial sequence found for period: 14
+Close: [8, 4, 4, 1, 8, 4, 3, 999], period: 8, i: 7
+Completed period: 11, least uncompleted period: 5
+Trivial sequence found for period: 15
+Completed period: 12, least uncompleted period: 5
+Trivial sequence found for period: 16
+Trivial sequence found for period: 17
+Completed period: 13, least uncompleted period: 5
+Trivial sequence found for period: 18
+Completed period: 5, least uncompleted period: 6
+Completed period: 6, least uncompleted period: 8
+Trivial sequence found for period: 19
+Trivial sequence found for period: 20
+Completed period: 8, least uncompleted period: 14
+Trivial sequence found for period: 21
+Completed period: 14, least uncompleted period: 15
+Trivial sequence found for period: 22
+Completed period: 15, least uncompleted period: 16
+Trivial sequence found for period: 23
+Completed period: 16, least uncompleted period: 17
+Trivial sequence found for period: 24
+Completed period: 19, least uncompleted period: 17
+Trivial sequence found for period: 25
+Completed period: 18, least uncompleted period: 17
+Completed period: 17, least uncompleted period: 20
+Trivial sequence found for period: 26
+Trivial sequence found for period: 27
+Completed period: 20, least uncompleted period: 21
+Trivial sequence found for period: 28
+Completed period: 21, least uncompleted period: 22
+Trivial sequence found for period: 29
+Completed period: 22, least uncompleted period: 23
+Trivial sequence found for period: 30
+Completed period: 23, least uncompleted period: 24
+Trivial sequence found for period: 31
+Completed period: 24, least uncompleted period: 25
+Trivial sequence found for period: 32
+Trivial sequence found for period: 33
+Trivial sequence found for period: 6
+Trivial sequence found for period: 11
+Trivial sequence found for period: 8
+Trivial sequence found for period: 5
+Trivial sequence found for period: 9
+Trivial sequence found for period: 10
+Trivial sequence found for period: 12
+Trivial sequence found for period: 7
+Close: [6, 1, 6, 2, 6, 999], period: 6, i: 5
+Completed period: 11, least uncompleted period: 5
+Close: [8, 2, 2, 1, 8, 4, 8, 999], period: 8, i: 7
+Close: [5, 1, 5, 2, 999], period: 5, i: 4
+Close: [6, 3, 2, 6, 3, 999], period: 6, i: 5
+Trivial sequence found for period: 13
+Completed period: 9, least uncompleted period: 5
+Testing sequence: [8, 2, 2, 1, 8, 4, 8, 2], period: 8
+Testing sequence: [5, 1, 5, 2, 5], period: 5
+Testing sequence: [6, 3, 2, 6, 3, 3], period: 6
+Completed period: 10, least uncompleted period: 5
+Trivial sequence found for period: 14
+Close: [8, 4, 4, 1, 8, 4, 3, 999], period: 8, i: 7
+Close: [5, 3, 5, 2, 999], period: 5, i: 4
+Completed period: 12, least uncompleted period: 5
+Trivial sequence found for period: 15
+Completed period: 7, least uncompleted period: 5
+Trivial sequence found for period: 16
+Trivial sequence found for period: 17
+Completed period: 13, least uncompleted period: 5
+Trivial sequence found for period: 18
+Completed period: 6, least uncompleted period: 5
+Completed period: 8, least uncompleted period: 5
+Trivial sequence found for period: 19
+Completed period: 14, least uncompleted period: 5
+Trivial sequence found for period: 20
+Trivial sequence found for period: 21
+Completed period: 5, least uncompleted period: 15
+Trivial sequence found for period: 22
+Completed period: 15, least uncompleted period: 16
+Trivial sequence found for period: 23
+Completed period: 16, least uncompleted period: 17
+Trivial sequence found for period: 24
+Completed period: 17, least uncompleted period: 18
+Completed period: 18, least uncompleted period: 19
+Trivial sequence found for period: 25
+Trivial sequence found for period: 26
+Completed period: 19, least uncompleted period: 20
+Completed period: 20, least uncompleted period: 21
+Trivial sequence found for period: 27
+Completed period: 21, least uncompleted period: 22
+Trivial sequence found for period: 28
+Trivial sequence found for period: 29
+Completed period: 22, least uncompleted period: 23
+Trivial sequence found for period: 30
+Completed period: 23, least uncompleted period: 24
+Trivial sequence found for period: 31
+Completed period: 24, least uncompleted period: 25
+Trivial sequence found for period: 32
+Trivial sequence found for period: 33
+Trivial sequence found for period: 6
+Trivial sequence found for period: 10
+Trivial sequence found for period: 9
+Trivial sequence found for period: 8
+Trivial sequence found for period: 7
+Trivial sequence found for period: 5
+Trivial sequence found for period: 11
+Trivial sequence found for period: 12
+Close: [6, 1, 6, 2, 6, 999], period: 6, i: 5
+Completed period: 10, least uncompleted period: 5
+Close: [8, 2, 2, 1, 8, 4, 8, 999], period: 8, i: 7
+Close: [5, 1, 5, 2, 999], period: 5, i: 4
+Close: [6, 3, 2, 6, 3, 999], period: 6, i: 5
+Trivial sequence found for period: 13
+Completed period: 9, least uncompleted period: 5
+Testing sequence: [8, 2, 2, 1, 8, 4, 8, 2], period: 8
+Testing sequence: [5, 1, 5, 2, 5], period: 5
+Testing sequence: [6, 3, 2, 6, 3, 3], period: 6
+Completed period: 7, least uncompleted period: 5
+Trivial sequence found for period: 14
+Close: [8, 4, 4, 1, 8, 4, 3, 999], period: 8, i: 7
+Close: [5, 3, 5, 2, 999], period: 5, i: 4
+Completed period: 11, least uncompleted period: 5
+Trivial sequence found for period: 15
+Completed period: 12, least uncompleted period: 5
+Trivial sequence found for period: 16
+Completed period: 13, least uncompleted period: 5
+Trivial sequence found for period: 17
+Completed period: 6, least uncompleted period: 5
+Trivial sequence found for period: 18
+Trivial sequence found for period: 19
+Completed period: 8, least uncompleted period: 5
+Trivial sequence found for period: 20
+Completed period: 5, least uncompleted period: 14
+Completed period: 14, least uncompleted period: 15
+Trivial sequence found for period: 21
+Completed period: 15, least uncompleted period: 16
+Trivial sequence found for period: 22
+Completed period: 16, least uncompleted period: 17
+Trivial sequence found for period: 23
+Trivial sequence found for period: 24
+Completed period: 17, least uncompleted period: 18
+Trivial sequence found for period: 25
+Completed period: 18, least uncompleted period: 19
+Trivial sequence found for period: 26
+Completed period: 19, least uncompleted period: 20
+Completed period: 20, least uncompleted period: 21
+Trivial sequence found for period: 27
+Trivial sequence found for period: 28
+Completed period: 21, least uncompleted period: 22
+Trivial sequence found for period: 29
+Completed period: 22, least uncompleted period: 23
+Trivial sequence found for period: 30
+Completed period: 23, least uncompleted period: 24
+Trivial sequence found for period: 31
+Completed period: 24, least uncompleted period: 25
+Trivial sequence found for period: 32
+Trivial sequence found for period: 33
+Trivial sequence found for period: 5
+Trivial sequence found for period: 8
+Trivial sequence found for period: 9
+Trivial sequence found for period: 6
+Trivial sequence found for period: 7
+Trivial sequence found for period: 10
+Trivial sequence found for period: 11
+Trivial sequence found for period: 12
+Close: [5, 1, 5, 2, 999], period: 5, i: 4
+Close: [8, 2, 2, 1, 8, 4, 8, 999], period: 8, i: 7
+Completed period: 9, least uncompleted period: 5
+Close: [6, 1, 6, 2, 6, 999], period: 6, i: 5
+Testing sequence: [5, 1, 5, 2, 5], period: 5
+Testing sequence: [8, 2, 2, 1, 8, 4, 8, 2], period: 8
+Completed period: 7, least uncompleted period: 5
+Trivial sequence found for period: 13
+Close: [6, 3, 2, 6, 3, 999], period: 6, i: 5
+Close: [5, 3, 5, 2, 999], period: 5, i: 4
+Close: [8, 4, 4, 1, 8, 4, 3, 999], period: 8, i: 7
+Completed period: 10, least uncompleted period: 5
+Trivial sequence found for period: 14
+Testing sequence: [6, 3, 2, 6, 3, 3], period: 6
+Completed period: 11, least uncompleted period: 5
+Trivial sequence found for period: 15
+Completed period: 12, least uncompleted period: 5
+Trivial sequence found for period: 16
+Completed period: 13, least uncompleted period: 5
+Trivial sequence found for period: 17
+Trivial sequence found for period: 18
+Completed period: 5, least uncompleted period: 6
+Completed period: 8, least uncompleted period: 6
+Trivial sequence found for period: 19
+Trivial sequence found for period: 20
+Completed period: 6, least uncompleted period: 14
+Trivial sequence found for period: 21
+Completed period: 17, least uncompleted period: 14
+Trivial sequence found for period: 22
+Completed period: 15, least uncompleted period: 14
+Completed period: 16, least uncompleted period: 14
+Trivial sequence found for period: 23
+Trivial sequence found for period: 24
+Completed period: 14, least uncompleted period: 18
+Completed period: 18, least uncompleted period: 19
+Trivial sequence found for period: 25
+Completed period: 19, least uncompleted period: 20
+Trivial sequence found for period: 26
+Trivial sequence found for period: 27
+Completed period: 20, least uncompleted period: 21
+Trivial sequence found for period: 28
+Completed period: 21, least uncompleted period: 22
+Trivial sequence found for period: 29
+Completed period: 22, least uncompleted period: 23
+Trivial sequence found for period: 30
+Completed period: 23, least uncompleted period: 24
+Trivial sequence found for period: 31
+Completed period: 24, least uncompleted period: 25
+Trivial sequence found for period: 32
+Trivial sequence found for period: 33
+Trivial sequence found for period: 5
+Trivial sequence found for period: 10
+Trivial sequence found for period: 11
+Trivial sequence found for period: 7
+Trivial sequence found for period: 8
+Trivial sequence found for period: 6
+Trivial sequence found for period: 12
+Trivial sequence found for period: 9
+Close: [5, 1, 5, 2, 999], period: 5, i: 4
+Completed period: 10, least uncompleted period: 5
+Close: [8, 2, 2, 1, 8, 4, 8, 999], period: 8, i: 7
+Close: [6, 1, 6, 2, 6, 999], period: 6, i: 5
+Testing sequence: [5, 1, 5, 2, 5], period: 5
+Trivial sequence found for period: 13
+Completed period: 11, least uncompleted period: 5
+Testing sequence: [8, 2, 2, 1, 8, 4, 8, 2], period: 8
+Close: [6, 3, 2, 6, 3, 999], period: 6, i: 5
+Close: [5, 3, 5, 2, 999], period: 5, i: 4
+Completed period: 7, least uncompleted period: 5
+Trivial sequence found for period: 14
+Close: [8, 4, 4, 1, 8, 4, 3, 999], period: 8, i: 7
+Testing sequence: [6, 3, 2, 6, 3, 3], period: 6
+Completed period: 12, least uncompleted period: 5
+Trivial sequence found for period: 15
+Completed period: 9, least uncompleted period: 5
+Trivial sequence found for period: 16
+Completed period: 13, least uncompleted period: 5
+Trivial sequence found for period: 17
+Trivial sequence found for period: 18
+Completed period: 5, least uncompleted period: 6
+Trivial sequence found for period: 19
+Completed period: 8, least uncompleted period: 6
+Trivial sequence found for period: 20
+Completed period: 14, least uncompleted period: 6
+Completed period: 18, least uncompleted period: 6
+Trivial sequence found for period: 22
+Completed period: 15, least uncompleted period: 6
+Trivial sequence found for period: 21
+Trivial sequence found for period: 23
+Completed period: 16, least uncompleted period: 6
+Trivial sequence found for period: 24
+Completed period: 17, least uncompleted period: 6
+Completed period: 6, least uncompleted period: 19
+Trivial sequence found for period: 25
+Completed period: 19, least uncompleted period: 20
+Trivial sequence found for period: 26
+Completed period: 20, least uncompleted period: 21
+Trivial sequence found for period: 27
+Trivial sequence found for period: 28
+Completed period: 21, least uncompleted period: 22
+Trivial sequence found for period: 29
+Completed period: 22, least uncompleted period: 23
+Trivial sequence found for period: 30
+Completed period: 23, least uncompleted period: 24
+Trivial sequence found for period: 31
+Completed period: 24, least uncompleted period: 25
+Trivial sequence found for period: 32
+Trivial sequence found for period: 33
+Trivial sequence found for period: 5
+Trivial sequence found for period: 12
+Trivial sequence found for period: 7
+Trivial sequence found for period: 6
+Trivial sequence found for period: 9
+Trivial sequence found for period: 10
+Trivial sequence found for period: 8
+Trivial sequence found for period: 11
+Close: [5, 1, 5, 2, 999], period: 5, i: 4
+Completed period: 12, least uncompleted period: 5
+Close: [6, 1, 6, 2, 6, 999], period: 6, i: 5
+Close: [8, 2, 2, 1, 8, 4, 8, 999], period: 8, i: 7
+Testing sequence: [5, 1, 5, 2, 5], period: 5
+Completed period: 7, least uncompleted period: 5
+Trivial sequence found for period: 13
+Close: [6, 3, 2, 6, 3, 999], period: 6, i: 5
+Testing sequence: [8, 2, 2, 1, 8, 4, 8, 2], period: 8
+Close: [5, 3, 5, 2, 999], period: 5, i: 4
+Completed period: 9, least uncompleted period: 5
+Trivial sequence found for period: 14
+Testing sequence: [6, 3, 2, 6, 3, 3], period: 6
+Close: [8, 4, 4, 1, 8, 4, 3, 999], period: 8, i: 7
+Completed period: 10, least uncompleted period: 5
+Trivial sequence found for period: 15
+Completed period: 11, least uncompleted period: 5
+Trivial sequence found for period: 16
+Trivial sequence found for period: 17
+Completed period: 13, least uncompleted period: 5
+Completed period: 5, least uncompleted period: 6
+Trivial sequence found for period: 18
+Completed period: 6, least uncompleted period: 8
+Trivial sequence found for period: 19
+Trivial sequence found for period: 20
+Completed period: 14, least uncompleted period: 8
+Trivial sequence found for period: 21
+Completed period: 8, least uncompleted period: 15
+Completed period: 15, least uncompleted period: 16
+Trivial sequence found for period: 22
+Completed period: 16, least uncompleted period: 17
+Trivial sequence found for period: 23
+Completed period: 17, least uncompleted period: 18
+Trivial sequence found for period: 24
+Trivial sequence found for period: 25
+Completed period: 18, least uncompleted period: 19
+Trivial sequence found for period: 26
+Completed period: 19, least uncompleted period: 20
+Trivial sequence found for period: 27
+Completed period: 20, least uncompleted period: 21
+Trivial sequence found for period: 28
+Trivial sequence found for period: 29
+Completed period: 23, least uncompleted period: 21
+Trivial sequence found for period: 30
+Completed period: 24, least uncompleted period: 21
+Trivial sequence found for period: 31
