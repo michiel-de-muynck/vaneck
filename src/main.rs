@@ -81,6 +81,7 @@ fn extend_sequence(period: N, i: N, prev_num: N, sequence: &mut [N], last_index:
         last_index[prev_num] = prev_num_last_i;
         sequence[i] = prev_sequence_i;
     } else {
+        // TODO: can't have 2x period in a row
         let prev_sequence_i = sequence[i];
         debug_assert_eq!(prev_sequence_i, 999);
         for n in i..=period {
@@ -149,79 +150,116 @@ fn extend_sequence(period: N, i: N, prev_num: N, sequence: &mut [N], last_index:
                         }
                     }
 
-                    // pairs of (location, should_be_mask)
-                    let mut test_locs = vec![(projected_n, prev_num_mask)];
-                    let mut impossible = false;
+                    struct LoopState<'a> {
+                        impossible: bool,
+                        changed: bool,
+                        masks: &'a mut [u64],
+                        period: usize, // the only reason we take this up into the loop is just convenience
+                    }
 
-                    while let Some((test_loc, test_target_mask)) = test_locs.pop() {
-                        let prev_mask = masks[test_loc];
-                        masks[test_loc] &= test_target_mask;
-                        if masks[test_loc] == 0 {
-                            impossible = true;
-                            break;
-                        }
-                        if masks[test_loc] == prev_mask {
-                            continue;
-                        }
+                    let mut loop_state = LoopState {
+                        impossible: false,
+                        changed: true,
+                        masks: &mut masks,
+                        period,
+                    };
 
-                        // project test_loc backwards
-                        let next_el_pos = if test_loc == period-1 { 0 } else { test_loc+1 };
-                        let next_el_mask = masks[next_el_pos];
-                        debug_assert!(next_el_mask != 0);
-                        if next_el_mask.count_ones() == 1 {
-                            let d = next_el_mask.trailing_zeros() as usize;
-                            debug_assert!(d <= period);
-                            let new_test_loc = if d <= test_loc {
-                                test_loc - d
-                            } else {
-                                period + test_loc - d
-                            };
-                            test_locs.push((new_test_loc, masks[test_loc]));
-                        }
-                        // if we're writing a concrete element x,
-                        // make the elements between test_loc and the minimum projected location not be x
-                        if masks[test_loc].count_ones() == 1 {
-                            let min_d = next_el_mask.trailing_zeros() as usize;
-                            debug_assert!(min_d <= period);
-                            for j in 1..min_d {
-                                let new_test_loc = if j <= test_loc {
-                                    test_loc - j
-                                } else {
-                                    period + test_loc - j
-                                };
-                                test_locs.push((new_test_loc, !masks[test_loc]));
+                    while loop_state.changed && !loop_state.impossible {
+                        loop_state.changed = false;
+
+                        fn apply_mask_to_pos(pos: usize, mask: u64, loop_state: &mut LoopState) {
+                            debug_assert!(pos < loop_state.period);
+                            let prev_mask = loop_state.masks[pos];
+                            loop_state.masks[pos] &= mask;
+                            let new_mask = loop_state.masks[pos];
+                            if new_mask == 0 {
+                                loop_state.impossible = true;
+                            } else if new_mask != prev_mask {
+                                loop_state.changed = true;
                             }
                         }
-                        // project prev_el backwards
-                        let prev_el_pos = if test_loc == 0 { period-1 } else { test_loc-1 };
-                        let prev_el_mask = masks[prev_el_pos];
-                        if masks[test_loc].count_ones() == 1 {
-                            let d = masks[test_loc].trailing_zeros() as usize;
-                            debug_assert!(d <= period);
-                            let new_test_loc = if d <= prev_el_pos {
-                                prev_el_pos - d
-                            } else {
-                                period + prev_el_pos - d
-                            };
-                            test_locs.push((new_test_loc, prev_el_mask));
-                        }
-                        // if prev_el is a concrete element x,
-                        // make the elements between prev_el and the minimum projected location not be x
-                        if prev_el_mask.count_ones() == 1 {
-                            let min_d = masks[test_loc].trailing_zeros() as usize;
-                            debug_assert!(min_d <= period);
-                            for j in 1..min_d {
-                                let new_test_loc = if j <= prev_el_pos {
-                                    prev_el_pos - j
+
+                        // if we know the next element, project the current mask back that far
+                        fn project_back(projected_pos: usize, loop_state: &mut LoopState) {
+                            let next_el_pos = if projected_pos == loop_state.period-1 { 0 } else { projected_pos+1 };
+                            let next_el_mask = loop_state.masks[next_el_pos];
+                            debug_assert!(next_el_mask != 0);
+                            if next_el_mask.count_ones() == 1 {
+                                let d = next_el_mask.trailing_zeros() as usize;
+                                debug_assert!(d <= loop_state.period);
+                                let new_test_loc = if d <= projected_pos {
+                                    projected_pos - d
                                 } else {
-                                    period + prev_el_pos - j
+                                    loop_state.period + projected_pos - d
                                 };
-                                test_locs.push((new_test_loc, !prev_el_mask));
+                                apply_mask_to_pos(new_test_loc, loop_state.masks[projected_pos], loop_state);
                             }
+                        }
+
+                        // if the element at projected_pos is a concrete element x,
+                        // make the elements between projected_pos and the minimum projected location to the left not be x
+                        fn eliminate_x_up_to_projection(projected_pos: usize, loop_state: &mut LoopState) {
+                            if loop_state.masks[projected_pos].count_ones() == 1 {
+                                let next_el_pos = if projected_pos == loop_state.period-1 { 0 } else { projected_pos+1 };
+                                let next_el_mask = loop_state.masks[next_el_pos];
+                                let min_d = next_el_mask.trailing_zeros() as usize;
+                                debug_assert!(min_d <= loop_state.period);
+                                for j in 1..min_d {
+                                    let new_test_loc = if j <= projected_pos {
+                                        projected_pos - j
+                                    } else {
+                                        loop_state.period + projected_pos - j
+                                    };
+                                    apply_mask_to_pos(new_test_loc, !loop_state.masks[projected_pos], loop_state);
+                                }
+                            }
+                        }
+
+                        fn bound_range_of(of_pos: usize, loop_state: &mut LoopState) {
+                            let of_mask = loop_state.masks[of_pos];
+                            let range_pos = if of_pos == loop_state.period-1 { 0 } else { of_pos+1 };
+                            for j in 1..=loop_state.period {
+                                let new_test_loc = if j <= of_pos {
+                                    of_pos - j
+                                } else {
+                                    loop_state.period + of_pos - j
+                                };
+                                if loop_state.masks[new_test_loc] & of_mask != 0 {
+                                    let mut new_range_mask : u64 = !0;
+                                    new_range_mask &= !((1 << j) - 1);
+                                    if of_mask.count_ones() == 1 {
+                                        for k in j..=loop_state.period {
+                                            let new_test_loc = if k <= of_pos {
+                                                of_pos - k
+                                            } else {
+                                                loop_state.period + of_pos - k
+                                            };
+                                            if loop_state.masks[new_test_loc] == of_mask {
+                                                new_range_mask &= (1 << (k+1)) - 1;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    apply_mask_to_pos(range_pos, new_range_mask, loop_state);
+                                    break;
+                                }
+                            }
+                        }
+
+                        for i in 0..period {
+                            project_back(i, &mut loop_state);
+                            if loop_state.impossible {
+                                break;
+                            }
+                            eliminate_x_up_to_projection(i, &mut loop_state);
+                            if loop_state.impossible {
+                                break;
+                            }
+                            bound_range_of(i, &mut loop_state);
                         }
                     }
 
-                    if impossible {
+                    if loop_state.impossible {
                         return;
                     }
 
