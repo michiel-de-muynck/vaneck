@@ -118,7 +118,9 @@ fn extend_sequence(period: N, i: N, masks: &[u64]) {
                 }
             }
 
-            // if we know the next element, project the current mask back that far
+            // if we know the next element, say it is x,
+            // then the current element and the element x back must be the same
+            // so only elements that are in both of their masks are actually possible
             fn project_back(projected_pos: usize, loop_state: &mut LoopState) {
                 let next_el_pos = if projected_pos == loop_state.period-1 { 0 } else { projected_pos+1 };
                 let next_el_mask = loop_state.masks[next_el_pos];
@@ -131,7 +133,9 @@ fn extend_sequence(period: N, i: N, masks: &[u64]) {
                     } else {
                         loop_state.period + projected_pos - d
                     };
-                    apply_mask_to_pos(new_test_loc, loop_state.masks[projected_pos], loop_state);
+                    let overlap = loop_state.masks[projected_pos] & loop_state.masks[new_test_loc];
+                    apply_mask_to_pos(projected_pos, overlap, loop_state);
+                    apply_mask_to_pos(new_test_loc, overlap, loop_state);
                 }
             }
 
