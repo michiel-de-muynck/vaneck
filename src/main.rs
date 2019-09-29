@@ -1,6 +1,8 @@
 use std::fs::{File, OpenOptions};
 use std::sync::Mutex;
 use std::io::Write;
+
+#[allow(unused_imports)]
 use rayon::prelude::*;
 
 #[macro_use]
@@ -19,8 +21,8 @@ lazy_static! {
     static ref PERIODS_COMPLETED: Mutex<Vec<bool>> = Mutex::new(vec![false; 64]);
 }
 
-fn is_trivial(sequence: &[N]) -> bool {
-    sequence[0] == 1 && sequence[1] == 1
+fn is_trivial_masks(masks: &[u64]) -> bool {
+    masks[0].count_ones() == 1 && masks[1].count_ones() == 1 && masks[0].trailing_zeros() == 1 && masks[1].trailing_zeros() == 1
 }
 
 fn output(s: String) {
@@ -30,300 +32,250 @@ fn output(s: String) {
     output_file.sync_data().expect("failed to flush output file");
 }
 
-fn check_sequence(period: N, i: N, prev_num: N, sequence: &[N], last_index: &mut [N]) {
-    if i == 0 && !is_trivial(sequence) {
-        output(format!("Testing sequence: {:?}, period: {}", &sequence[0..period], period));
-    }
-    let prev_num_last_i = last_index[prev_num];
-    if prev_num_last_i != 999 {
-        last_index[prev_num] = period + i - 1;
-        let cur_num = (period + i - 1) - prev_num_last_i;
-        if sequence[i] == cur_num {
-            if i == period - 3 {
-                if is_trivial(sequence) {
-                    output(format!("Trivial sequence found for period: {}", period));
-                } else {
-                    output("==========================================".to_owned());
-                    output(format!("Valid sequence found: {:?}, period: {}", &sequence[0..period], period));
-                    output("==========================================".to_owned());
-                }
-            } else {
-                check_sequence(period, i+1, cur_num, sequence, last_index);
-            }
+fn masks_to_sequence(masks: &[u64]) -> Vec<N> {
+    masks.into_iter().map(|mask| {
+        if mask.count_ones() == 1 {
+            mask.trailing_zeros() as N
+        } else {
+            10000+(mask.count_ones() as N)
         }
-        last_index[prev_num] = prev_num_last_i;
-    }
+    }).collect()
 }
 
-fn extend_sequence(period: N, i: N, prev_num: N, sequence: &mut [N], last_index: &mut [N], masks: &mut [u64]) {
-    debug_assert!(i > 0);
-    let prev_num_last_i = last_index[prev_num];
-    if period <= 25 && i >= period-1 && !is_trivial(sequence) {
-        output(format!("Close: {:?}, period: {}, i: {}", &sequence[0..period], period, i));
-    }
-    if prev_num_last_i != 999 {
-        let cur_num = (i - 1) - prev_num_last_i;
-        let cur_num_mask = 1 << cur_num;
-        if masks[i] & cur_num_mask == 0 {
-            return;
-        }
-        let prev_sequence_i = sequence[i];
-        debug_assert_eq!(prev_sequence_i, 999);
-        sequence[i] = cur_num;
-        last_index[prev_num] = i - 1;
-        let prev_mask = std::mem::replace(&mut masks[i], cur_num_mask);
-        if i == period - 1 {
-            check_sequence(period, 0, cur_num, sequence, last_index);
+fn masks_to_string(masks: &[u64]) -> String {
+    masks.into_iter().map(|mask| {
+        if mask.count_ones() == 1 {
+            format!("{}", mask.trailing_zeros())
+        } else if mask.count_ones() <= 7 {
+            let mut s = "".to_owned();
+            let mut x = *mask;
+            while x > 0 {
+                let d = x.trailing_zeros() as usize;
+                s += &format!("{}", d);
+                x -= 1 << d;
+                if x != 0 {
+                    s += "/";
+                }
+            }
+            s
         } else {
-            extend_sequence(period, i+1, cur_num, sequence, last_index, masks);
+            format!("???({})", mask.count_ones())
         }
-        masks[i] = prev_mask;
-        last_index[prev_num] = prev_num_last_i;
-        sequence[i] = prev_sequence_i;
+    }).collect::<Vec<_>>().join(", ")
+}
+
+fn extend_sequence(period: N, i: N, masks: &[u64]) {
+    debug_assert!(i > 0);
+    if i >= period/2+4 && !is_trivial_masks(masks) {
+        output(format!("Close: {:?}, period: {}, i: {}", masks_to_string(masks), period, i));
+    }
+    if masks[i].count_ones() == 1 {
+        if i == period - 1 {
+            if is_trivial_masks(masks) {
+                output(format!("Trivial sequence found for period: {}", period));
+            } else {
+                output("==========================================".to_owned());
+                output(format!("Found: {:?}, period: {}", masks_to_sequence(masks), period));
+                output("==========================================".to_owned());
+            }
+        } else {
+            extend_sequence(period, i+1, masks);
+        }
     } else {
-        // TODO: can't have 2x period in a row
-        let prev_sequence_i = sequence[i];
-        debug_assert_eq!(prev_sequence_i, 999);
-        for n in i..=period {
+        for n in 1..=period {
             let n_mask = 1 << n;
-            let prev_num_mask = 1 << prev_num;
             if masks[i] & n_mask == 0 {
                 continue;
             }
-            if n == period {
-                if prev_num == period {
-                    // can't have 2x period in a row
-                    continue;
-                }
-                let mut backup_mask = 0u64;
-                for mask in masks[i+1..period].iter_mut() {
-                    backup_mask <<= 1;
-                    if *mask & prev_num_mask != 0 {
-                        *mask -= prev_num_mask;
-                    }
-                    debug_assert_ne!(*mask, 0);
-                }
-                last_index[prev_num] = i - 1;
-                sequence[i] = n;
-                let prev_mask = std::mem::replace(&mut masks[i], n_mask);
-                if i == period - 1 {
-                    check_sequence(period, 0, n, sequence, last_index);
-                } else {
-                    extend_sequence(period, i+1, n, sequence, last_index, masks);
-                }
-                masks[i] = prev_mask;
-                for mask in masks[i+1..period].iter_mut().rev() {
-                    debug_assert_eq!(*mask & prev_num_mask, 0);
-                    if backup_mask & 1 != 0 {
-                        *mask |= prev_num_mask;
-                    }
-                    debug_assert_ne!(*mask, 0);
-                    backup_mask >>= 1;
-                }
-                sequence[i] = prev_sequence_i;
-                last_index[prev_num] = prev_num_last_i;
-            } else {
-                let projected_n = period + i - 1 - n;
-                /*dbg!(projected_n);
-                dbg!(i);
-                dbg!(n);
-                dbg!(&sequence[0..period]);*/
-                debug_assert!(projected_n > i);
-                debug_assert!(projected_n < period);
-                let prev_projected_n_mask = masks[projected_n];
-                if prev_projected_n_mask & prev_num_mask == 0 {
-                    continue;
-                }
-                if i < period &&
-                    (
-                        projected_n == period-1 ||
-                        projected_n == i+1 ||
-                        masks[projected_n-1].count_ones() == 1 ||
-                        masks[projected_n+1].count_ones() == 1
-                    )
-                {
-                    let mut masks = masks[0..period].to_owned();
 
-                    for mask in masks[projected_n+1..period].iter_mut() {
-                        if *mask & prev_num_mask != 0 {
-                            *mask -= prev_num_mask;
-                        }
-                    }
+            let mut masks = masks[0..period].to_owned();
 
-                    struct LoopState<'a> {
-                        impossible: bool,
-                        changed: bool,
-                        masks: &'a mut [u64],
-                        period: usize, // the only reason we take this up into the loop is just convenience
-                    }
+            masks[i] = n_mask;
 
-                    let mut loop_state = LoopState {
-                        impossible: false,
-                        changed: true,
-                        masks: &mut masks,
-                        period,
+            struct LoopState<'a> {
+                impossible: bool,
+                changed: bool,
+                masks: &'a mut [u64],
+                period: usize, // the only reason we take this up into the loop is just convenience
+            }
+
+            let mut loop_state = LoopState {
+                impossible: false,
+                changed: true,
+                masks: &mut masks,
+                period,
+            };
+
+            fn apply_mask_to_pos(pos: usize, mask: u64, loop_state: &mut LoopState) {
+                debug_assert!(pos < loop_state.period);
+                let prev_mask = loop_state.masks[pos];
+                loop_state.masks[pos] &= mask;
+                let new_mask = loop_state.masks[pos];
+                if new_mask == 0 {
+                    loop_state.impossible = true;
+                } else if new_mask != prev_mask {
+                    loop_state.changed = true;
+                }
+            }
+
+            // if we know the next element, project the current mask back that far
+            fn project_back(projected_pos: usize, loop_state: &mut LoopState) {
+                let next_el_pos = if projected_pos == loop_state.period-1 { 0 } else { projected_pos+1 };
+                let next_el_mask = loop_state.masks[next_el_pos];
+                debug_assert!(next_el_mask != 0);
+                if next_el_mask.count_ones() == 1 {
+                    let d = next_el_mask.trailing_zeros() as usize;
+                    debug_assert!(d <= loop_state.period);
+                    let new_test_loc = if d <= projected_pos {
+                        projected_pos - d
+                    } else {
+                        loop_state.period + projected_pos - d
                     };
+                    apply_mask_to_pos(new_test_loc, loop_state.masks[projected_pos], loop_state);
+                }
+            }
 
-                    while loop_state.changed && !loop_state.impossible {
-                        loop_state.changed = false;
-
-                        fn apply_mask_to_pos(pos: usize, mask: u64, loop_state: &mut LoopState) {
-                            debug_assert!(pos < loop_state.period);
-                            let prev_mask = loop_state.masks[pos];
-                            loop_state.masks[pos] &= mask;
-                            let new_mask = loop_state.masks[pos];
-                            if new_mask == 0 {
-                                loop_state.impossible = true;
-                            } else if new_mask != prev_mask {
-                                loop_state.changed = true;
-                            }
-                        }
-
-                        // if we know the next element, project the current mask back that far
-                        fn project_back(projected_pos: usize, loop_state: &mut LoopState) {
-                            let next_el_pos = if projected_pos == loop_state.period-1 { 0 } else { projected_pos+1 };
-                            let next_el_mask = loop_state.masks[next_el_pos];
-                            debug_assert!(next_el_mask != 0);
-                            if next_el_mask.count_ones() == 1 {
-                                let d = next_el_mask.trailing_zeros() as usize;
-                                debug_assert!(d <= loop_state.period);
-                                let new_test_loc = if d <= projected_pos {
-                                    projected_pos - d
-                                } else {
-                                    loop_state.period + projected_pos - d
-                                };
-                                apply_mask_to_pos(new_test_loc, loop_state.masks[projected_pos], loop_state);
-                            }
-                        }
-
-                        // if the element at projected_pos is a concrete element x,
-                        // make the elements between projected_pos and the minimum projected location to the left not be x
-                        fn eliminate_x_up_to_projection(projected_pos: usize, loop_state: &mut LoopState) {
-                            if loop_state.masks[projected_pos].count_ones() == 1 {
-                                let next_el_pos = if projected_pos == loop_state.period-1 { 0 } else { projected_pos+1 };
-                                let next_el_mask = loop_state.masks[next_el_pos];
-                                let min_d = next_el_mask.trailing_zeros() as usize;
-                                debug_assert!(min_d <= loop_state.period);
-                                for j in 1..min_d {
-                                    let new_test_loc = if j <= projected_pos {
-                                        projected_pos - j
-                                    } else {
-                                        loop_state.period + projected_pos - j
-                                    };
-                                    apply_mask_to_pos(new_test_loc, !loop_state.masks[projected_pos], loop_state);
-                                }
-                            }
-                        }
-
-                        fn bound_range_of(of_pos: usize, loop_state: &mut LoopState) {
-                            let of_mask = loop_state.masks[of_pos];
-                            let range_pos = if of_pos == loop_state.period-1 { 0 } else { of_pos+1 };
-                            for j in 1..=loop_state.period {
-                                let new_test_loc = if j <= of_pos {
-                                    of_pos - j
-                                } else {
-                                    loop_state.period + of_pos - j
-                                };
-                                if loop_state.masks[new_test_loc] & of_mask != 0 {
-                                    let mut new_range_mask : u64 = !0;
-                                    new_range_mask &= !((1 << j) - 1);
-                                    if of_mask.count_ones() == 1 {
-                                        for k in j..=loop_state.period {
-                                            let new_test_loc = if k <= of_pos {
-                                                of_pos - k
-                                            } else {
-                                                loop_state.period + of_pos - k
-                                            };
-                                            if loop_state.masks[new_test_loc] == of_mask {
-                                                new_range_mask &= (1 << (k+1)) - 1;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    apply_mask_to_pos(range_pos, new_range_mask, loop_state);
-                                    break;
-                                }
-                            }
-                        }
-
-                        for i in 0..period {
-                            project_back(i, &mut loop_state);
-                            if loop_state.impossible {
-                                break;
-                            }
-                            eliminate_x_up_to_projection(i, &mut loop_state);
-                            if loop_state.impossible {
-                                break;
-                            }
-                            bound_range_of(i, &mut loop_state);
-                        }
-                    }
-
-                    if loop_state.impossible {
-                        return;
-                    }
-
-                    last_index[prev_num] = i - 1;
-                    sequence[i] = n;
-                    if i == period - 1 {
-                        check_sequence(period, 0, n, sequence, last_index);
-                    } else {
-                        extend_sequence(period, i+1, n, sequence, last_index, &mut masks);
-                    }
-                    sequence[i] = prev_sequence_i;
-                    last_index[prev_num] = prev_num_last_i;
-                } else {
-                    masks[projected_n] = prev_num_mask;
-                    let mut backup_mask = 0u64;
-                    for mask in masks[projected_n+1..period].iter_mut() {
-                        backup_mask <<= 1;
-                        if *mask & prev_num_mask != 0 {
-                            backup_mask += 1;
-                            *mask -= prev_num_mask;
-                        }
-                        debug_assert_ne!(*mask, 0);
-                    }
-                    last_index[prev_num] = i - 1;
-                    sequence[i] = n;
-                    let prev_mask = std::mem::replace(&mut masks[i], n_mask);
-                    if i == period - 1 {
-                        check_sequence(period, 0, n, sequence, last_index);
-                    } else {
-                        extend_sequence(period, i+1, n, sequence, last_index, masks);
-                    }
-                    masks[i] = prev_mask;
-                    sequence[i] = prev_sequence_i;
-                    last_index[prev_num] = prev_num_last_i;
-                    masks[projected_n] = prev_projected_n_mask;
-                    for mask in masks[projected_n+1..period].iter_mut().rev() {
-                        debug_assert_eq!(*mask & prev_num_mask, 0);
-                        if backup_mask & 1 != 0 {
-                            *mask |= prev_num_mask;
-                        }
-                        debug_assert_ne!(*mask, 0);
-                        backup_mask >>= 1;
+            // if the element at projected_pos is a concrete element x,
+            // make the elements between projected_pos and the minimum projected location to the left not be x
+            fn eliminate_x_up_to_projection(projected_pos: usize, loop_state: &mut LoopState) {
+                if loop_state.masks[projected_pos].count_ones() == 1 {
+                    let next_el_pos = if projected_pos == loop_state.period-1 { 0 } else { projected_pos+1 };
+                    let next_el_mask = loop_state.masks[next_el_pos];
+                    let min_d = next_el_mask.trailing_zeros() as usize;
+                    debug_assert!(min_d <= loop_state.period);
+                    for j in 1..min_d {
+                        let new_test_loc = if j <= projected_pos {
+                            projected_pos - j
+                        } else {
+                            loop_state.period + projected_pos - j
+                        };
+                        apply_mask_to_pos(new_test_loc, !loop_state.masks[projected_pos], loop_state);
                     }
                 }
+            }
+
+            // the range (next element) of an element must be:
+            //  - not x, if the mask of the element doesn't overlap with the mask of the element x back
+            //  - at most x, if the element is known and the earliest time it reappears is x elements back
+            fn bound_range_of(of_pos: usize, loop_state: &mut LoopState) {
+                let of_mask = loop_state.masks[of_pos];
+                let range_pos = if of_pos == loop_state.period-1 { 0 } else { of_pos+1 };
+                let mut new_range_mask : u64 = !0;
+                for j in 1..loop_state.period {
+                    let new_test_loc = if j <= of_pos {
+                        of_pos - j
+                    } else {
+                        loop_state.period + of_pos - j
+                    };
+                    if loop_state.masks[new_test_loc] & of_mask == 0 {
+                        new_range_mask &= !(1 << j);
+                    } else if of_mask.count_ones() == 1 && loop_state.masks[new_test_loc] == of_mask {
+                        new_range_mask &= (1 << (j+1)) - 1;
+                        break;
+                    }
+                }
+                apply_mask_to_pos(range_pos, new_range_mask, loop_state);
+            }
+
+            // if we know that the range is at least x,
+            // then the value can't be equal to any of the known values that appear in the previous x-1 elements 
+            fn bound_val_based_on_min_range(val_pos: usize, loop_state: &mut LoopState) {
+                if loop_state.masks[val_pos].count_ones() == 1 {
+                    // we can't get more info by running this function,
+                    // only detect impossibilities here that would also be detected in eliminate_x_up_to_projection,
+                    // so just don't run this function
+                }
+                let range_pos = if val_pos == loop_state.period-1 { 0 } else { val_pos+1 };
+                let range_mask = loop_state.masks[range_pos];
+                let min_d = range_mask.trailing_zeros() as usize;
+                debug_assert!(min_d <= loop_state.period);
+                let mut new_val_mask : u64 = !0;
+                for j in 1..min_d {
+                    let new_test_loc = if j <= val_pos {
+                        val_pos - j
+                    } else {
+                        loop_state.period + val_pos - j
+                    };
+                    if loop_state.masks[new_test_loc].count_ones() == 1 {
+                        new_val_mask &= !loop_state.masks[new_test_loc];
+                    }
+                }
+                apply_mask_to_pos(val_pos, new_val_mask, loop_state);
+            }
+
+            // do some first iterations that are simple and fast, but likely effective
+            project_back(i-1, &mut loop_state);
+            if loop_state.impossible {
+                continue;
+            }
+            for j in i..period {
+                loop_state.changed = false;
+                bound_range_of(j, &mut loop_state);
+                if loop_state.changed == false || loop_state.impossible {
+                    break;
+                }
+                project_back(j, &mut loop_state);
+                if loop_state.changed == false || loop_state.impossible {
+                    break;
+                }
+            }
+
+            loop_state.changed = true;
+
+            while loop_state.changed && !loop_state.impossible {
+                loop_state.changed = false;
+
+                for i in 0..period {
+                    project_back(i, &mut loop_state);
+                    if loop_state.impossible {
+                        break;
+                    }
+                    eliminate_x_up_to_projection(i, &mut loop_state);
+                    if loop_state.impossible {
+                        break;
+                    }
+                    bound_range_of(i, &mut loop_state);
+                    if loop_state.impossible {
+                        break;
+                    }
+                    bound_val_based_on_min_range(i, &mut loop_state);
+                }
+            }
+
+            if loop_state.impossible {
+                continue;
+            }
+
+            if i == period - 1 {
+                if is_trivial_masks(&masks) {
+                    output(format!("Trivial sequence found for period: {}", period));
+                } else {
+                    output("==========================================".to_owned());
+                    output(format!("Found: {:?}, period: {}", masks_to_sequence(&masks), period));
+                    output("==========================================".to_owned());
+                }
+            } else {
+                extend_sequence(period, i+1, &mut masks);
             }
         }
     }
 }
 
-fn start_sequence(period: N, sequence: &mut [N], last_index: &mut [N], masks: &mut [u64]) {
+fn start_sequence(period: N, masks: &mut [u64]) {
     debug_assert!(period >= 3);
     for n in 1..=period {
-        sequence[0] = n;
         if n == period-1 {
             continue;
         }
-        //println!("Start seq: {:?}, last_index: {:?}", &sequence[0..period], &last_index[0..period]);
+        // due to the cyclic nature of periodic sequences we can assume that the first element is the largest
         for mask in masks[0..period].iter_mut() {
             *mask = (1 << (n+1)) - 2;
             if n == period {
                 *mask -= 1 << (period-1);
             }
         }
-        extend_sequence(period, 1, n, sequence, last_index, masks);
+        masks[0] &= 1 << n;
+        extend_sequence(period, 1, masks);
     }
 }
 
@@ -340,16 +292,15 @@ fn main() {
         }
     }
 
+    rayon::ThreadPoolBuilder::new().num_threads(7).build_global().unwrap();
+
     (start_period..62).into_iter().par_bridge().for_each(|period| {
-        let mut sequence = Vec::new();
-        let mut last_index = Vec::new();
+    //(start_period..62).into_iter().for_each(|period| {
         let mut masks = Vec::new();
 
-        sequence.resize(3*period as usize, 999);
-        last_index.resize(3*period as usize, 999);
-        masks.resize(3*period as usize, 0);
+        masks.resize(period as usize, 0);
 
-        start_sequence(period as N, &mut sequence, &mut last_index, &mut masks);
+        start_sequence(period as N, &mut masks);
 
         {
             let mut periods_completed = PERIODS_COMPLETED.lock().unwrap();
