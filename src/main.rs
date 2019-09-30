@@ -42,6 +42,7 @@ fn masks_to_sequence(masks: &[u64]) -> Vec<N> {
     }).collect()
 }
 
+#[allow(dead_code)]
 fn masks_to_string(masks: &[u64]) -> String {
     masks.into_iter().map(|mask| {
         if mask.count_ones() == 1 {
@@ -66,9 +67,6 @@ fn masks_to_string(masks: &[u64]) -> String {
 
 fn extend_sequence(period: N, i: N, masks: &[u64]) {
     debug_assert!(i > 0);
-    if i >= period/2+4 && !is_trivial_masks(masks) {
-        output(format!("Close: {:?}, period: {}, i: {}", masks_to_string(masks), period, i));
-    }
     if masks[i].count_ones() == 1 {
         if i == period - 1 {
             if is_trivial_masks(masks) {
@@ -274,12 +272,15 @@ fn start_sequence(period: N, masks: &mut [u64]) {
         }
         // due to the cyclic nature of periodic sequences we can assume that the first element is the largest
         for mask in masks[0..period].iter_mut() {
-            *mask = (1 << (n+1)) - 2;
+            *mask = (1 << (n+1)) - 2; // - 2 because elements also can't be 0.
             if n == period {
                 *mask -= 1 << (period-1);
             }
         }
         masks[0] &= 1 << n;
+        // also, at least once in the sequence, the element after the largest element has to be at most floor(period/2)
+        // (note that you can't have 2x period in a row).
+        masks[1] &= (1 << ((period/2)+1)) - 1;
         extend_sequence(period, 1, masks);
     }
 }
@@ -297,8 +298,8 @@ fn main() {
 
     rayon::ThreadPoolBuilder::new().num_threads(7).build_global().unwrap();
 
-    (start_period..62).into_iter().par_bridge().for_each(|period| {
-    //(start_period..62).into_iter().for_each(|period| {
+    (start_period..61).into_iter().par_bridge().for_each(|period| {
+    //(start_period..61).into_iter().for_each(|period| {
         let mut masks = Vec::new();
 
         masks.resize(period as usize, 0);
