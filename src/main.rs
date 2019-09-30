@@ -188,6 +188,7 @@ fn extend_sequence(period: N, i: N, masks: &[u64]) {
                     // we can't get more info by running this function,
                     // only detect impossibilities here that would also be detected in eliminate_x_up_to_projection,
                     // so just don't run this function
+                    return;
                 }
                 let range_pos = if val_pos == loop_state.period-1 { 0 } else { val_pos+1 };
                 let range_mask = loop_state.masks[range_pos];
@@ -284,8 +285,6 @@ fn start_sequence(period: N, masks: &mut [u64]) {
 }
 
 fn main() {
-    //std::fs::create_dir_all("output").expect("Can't create output directory");
-
     let start_period = 5;
 
     // set periods below start_period as completed
